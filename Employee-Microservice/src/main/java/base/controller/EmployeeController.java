@@ -1,9 +1,10 @@
 package base.controller;
 
-import base.dto.Employee;
 import base.exception.EmployeeNotFoundException;
+import base.model.Employee;
 import base.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,22 +17,24 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addEmployee(@RequestBody Employee emp) {
-        employeeService.addEmployee(emp);
-        return ResponseEntity.ok("Employee added successfully");
+    @PostMapping("/addOrUpdate")
+    public ResponseEntity<?> addEmployee(@RequestBody Employee emp) {
+        Employee employee = employeeService.addOrUpdateEmployee(emp);
+
+        return (employee != null)
+                ? new ResponseEntity<>(emp, HttpStatus.CREATED) :
+                new ResponseEntity<>("Couldn't save employee details.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<String> updateEmployee(@RequestBody Employee emp) {
-        employeeService.updateEmployee(emp);
-        return ResponseEntity.ok("Employee updated successfully");
-    }
 
     @DeleteMapping("/delete/{employeeId}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable long employeeId) throws EmployeeNotFoundException {
-        employeeService.deleteEmployee(employeeId);
-        return ResponseEntity.ok("Employee deleted successfully");
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long employeeId) throws EmployeeNotFoundException {
+        boolean isDeleted = employeeService.deleteEmployee(employeeId);
+
+        if (isDeleted) {
+            return ResponseEntity.ok("Employee deleted successfully");
+        }
+        return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/findAll")
@@ -41,6 +44,6 @@ public class EmployeeController {
 
     @GetMapping("/id/{employeeId}")
     public Employee findEmployeeById(@PathVariable long employeeId) throws EmployeeNotFoundException {
-            return employeeService.findEmployeeById(employeeId);
+        return employeeService.findEmployeeById(employeeId);
     }
 }

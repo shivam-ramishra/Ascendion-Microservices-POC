@@ -1,19 +1,16 @@
 package base.service;
 
-import base.dto.Employee;
 import base.exception.EmployeeNotFoundException;
+import base.model.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
+    Employee addOrUpdateEmployee(Employee emp);
 
-    public void addEmployee(Employee emp);
+    boolean deleteEmployee(long employeeId) throws EmployeeNotFoundException;
 
-    public void updateEmployee(Employee emp);
+    List<Employee> findAll();
 
-    public void deleteEmployee(long employeeId) throws EmployeeNotFoundException;
-
-    public List<Employee> findAll();
-
-    public Employee findEmployeeById(long employeeId) throws EmployeeNotFoundException;
+    Employee findEmployeeById(long employeeId) throws EmployeeNotFoundException;
 }
