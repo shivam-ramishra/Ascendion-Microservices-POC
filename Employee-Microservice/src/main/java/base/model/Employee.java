@@ -14,6 +14,4 @@ public class Employee {
     private double salary;
     private boolean isActive;
     private Date dateOfJoining;
-    private Date createdDate;
-    private Date updatedDate;
 }

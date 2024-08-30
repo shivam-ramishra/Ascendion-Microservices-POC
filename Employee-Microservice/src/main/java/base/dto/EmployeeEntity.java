@@ -35,11 +35,8 @@ public class EmployeeEntity {
     private boolean isActive;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateOfJoining;
-
-    @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    private Date createdDate;
+    private Date dateOfJoining;
 
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
