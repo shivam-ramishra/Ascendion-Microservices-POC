@@ -1,21 +1,25 @@
 package base.service;
 
-import base.DtoConverter;
 import base.dto.EmployeeEntity;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
+import base.utils.DtoConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
-import static base.DtoConverter.entityToModel;
-import static base.DtoConverter.modelToEntity;
+import static base.utils.DtoConverter.entityToModel;
+import static base.utils.DtoConverter.modelToEntity;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
+    private static final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     @Autowired
     private EmployeeRepo employeeRepo;
@@ -23,13 +27,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee addOrUpdateEmployee(Employee emp) {
         try {
-            EmployeeEntity savedEmp = employeeRepo.save(modelToEntity(emp));
+            EmployeeEntity empEntity = modelToEntity(emp);
+            EmployeeEntity savedEmp = employeeRepo.save(empEntity);
             Employee empModel = entityToModel(savedEmp);
 
-            System.out.println("Employee Saved to DB: " + empModel);
+            log.info("Employee Saved to DB: {}", empModel);
             return empModel;
         } catch (Exception e) {
-            System.out.println("Something went wrong to save|update employee:: " + emp + ", with error: " + e.getMessage());
+            log.error("Something went wrong to save|update employee:: {} with error:: {}", emp, e.getMessage());
             return null;
         }
     }
@@ -41,10 +46,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (emp != null && emp.getEmployeeId() != null) {
             try {
                 employeeRepo.deleteById(emp.getEmployeeId());
-                System.out.println("Employee deleted from DB, empId: " + employeeId);
+                log.info("Employee deleted from DB, empId:: {} ", employeeId);
                 return true;
             } catch (Exception e) {
-                System.out.println("Something went wrong to delete employee:: " + emp + ", with error: " + e.getMessage());
+                log.error("Something went wrong to delete employee:: {}, with error:: {}", emp, e.getMessage());
                 return false;
             }
         }
@@ -59,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .map(DtoConverter::entityToModel)
                     .toList();
         } catch (Exception e) {
-            System.out.println("something went wrong to fetch Employees with Error: " + e.getMessage());
+            log.error("something went wrong to fetch Employees with Error:: {}", e.getMessage());
             return Collections.emptyList();
         }
     }

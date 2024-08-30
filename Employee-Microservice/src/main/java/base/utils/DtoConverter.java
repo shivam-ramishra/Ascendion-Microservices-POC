@@ -1,4 +1,4 @@
-package base;
+package base.utils;
 
 import base.dto.EmployeeEntity;
 import base.model.Employee;
