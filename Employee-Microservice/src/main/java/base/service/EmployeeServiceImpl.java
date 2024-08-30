@@ -1,15 +1,18 @@
 package base.service;
 
+import base.DtoConverter;
 import base.dto.EmployeeEntity;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+
+import static base.DtoConverter.entityToModel;
+import static base.DtoConverter.modelToEntity;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -20,17 +23,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee addOrUpdateEmployee(Employee emp) {
         try {
-            EmployeeEntity entity = EmployeeEntity.builder().build();
-            BeanUtils.copyProperties(emp, entity);
-
-            EmployeeEntity savedEmp = employeeRepo.save(entity);
-
-            Employee empModel = Employee.builder().build();
-            BeanUtils.copyProperties(savedEmp, empModel);
+            EmployeeEntity savedEmp = employeeRepo.save(modelToEntity(emp));
+            Employee empModel = entityToModel(savedEmp);
 
             System.out.println("Employee Saved to DB: " + empModel);
             return empModel;
-
         } catch (Exception e) {
             System.out.println("Something went wrong to save|update employee:: " + emp + ", with error: " + e.getMessage());
             return null;
@@ -59,11 +56,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             return employeeRepo.findAll()
                     .stream()
-                    .map(entity -> {
-                        Employee empModel = Employee.builder().build();
-                        BeanUtils.copyProperties(entity, empModel);
-                        return empModel;
-                    })
+                    .map(DtoConverter::entityToModel)
                     .toList();
         } catch (Exception e) {
             System.out.println("something went wrong to fetch Employees with Error: " + e.getMessage());
@@ -74,11 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findEmployeeById(long employeeId) throws EmployeeNotFoundException {
         return employeeRepo.findById(employeeId)
-                .map(entity -> {
-                    Employee empModel = Employee.builder().build();
-                    BeanUtils.copyProperties(entity, empModel);
-                    return empModel;
-                })
+                .map(DtoConverter::entityToModel)
                 .orElseThrow(() -> new EmployeeNotFoundException(" with Id: " + employeeId));
     }
 }
