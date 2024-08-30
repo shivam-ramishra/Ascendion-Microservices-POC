@@ -1,6 +1,7 @@
 package base.controller;
 
 import base.dto.Employee;
+import base.exception.EmployeeNotFoundException;
 import base.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/delete/{employeeId}")
-    public void deleteEmployee(@PathVariable long employeeId) {
+    public void deleteEmployee(@PathVariable long employeeId) throws EmployeeNotFoundException {
+
         employeeService.deleteEmployee(employeeId);
     }
 
@@ -35,7 +37,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/id/{employeeId}")
-    public Employee findEmployeeById(@PathVariable long employeeId) {
-        return employeeService.findEmployeeById(employeeId);
+    public Employee findEmployeeById(@PathVariable long employeeId) throws EmployeeNotFoundException {
+
+            return employeeService.findEmployeeById(employeeId);
+
     }
 }
