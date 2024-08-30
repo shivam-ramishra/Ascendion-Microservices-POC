@@ -4,6 +4,7 @@ import base.dto.Employee;
 import base.exception.EmployeeNotFoundException;
 import base.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,19 +17,21 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping("/add")
-    public void addEmployee(@RequestBody Employee emp) {
+    public ResponseEntity<String> addEmployee(@RequestBody Employee emp) {
         employeeService.addEmployee(emp);
+        return ResponseEntity.ok("Employee added successfully");
     }
 
     @PutMapping("/update")
-    public void updateEmployee(@RequestBody Employee emp) {
+    public ResponseEntity<String> updateEmployee(@RequestBody Employee emp) {
         employeeService.updateEmployee(emp);
+        return ResponseEntity.ok("Employee updated successfully");
     }
 
     @DeleteMapping("/delete/{employeeId}")
-    public void deleteEmployee(@PathVariable long employeeId) throws EmployeeNotFoundException {
-
+    public ResponseEntity<String> deleteEmployee(@PathVariable long employeeId) throws EmployeeNotFoundException {
         employeeService.deleteEmployee(employeeId);
+        return ResponseEntity.ok("Employee deleted successfully");
     }
 
     @GetMapping("/findAll")
@@ -38,8 +41,6 @@ public class EmployeeController {
 
     @GetMapping("/id/{employeeId}")
     public Employee findEmployeeById(@PathVariable long employeeId) throws EmployeeNotFoundException {
-
             return employeeService.findEmployeeById(employeeId);
-
     }
 }
