@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 import static base.utils.DtoConverter.entityToModel;
@@ -65,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .toList();
         } catch (Exception e) {
             log.error("something went wrong to fetch Employees with Error:: {}", e.getMessage());
-            return Collections.emptyList();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
