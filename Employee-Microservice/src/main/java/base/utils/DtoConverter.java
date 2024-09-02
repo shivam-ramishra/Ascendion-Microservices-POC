@@ -17,7 +17,7 @@ public class DtoConverter {
 
     public static Employee entityToModel(EmployeeEntity empEntity) {
         Employee model = Employee.builder().build();
-        BeanUtils.copyProperties(model, empEntity);
+        BeanUtils.copyProperties(empEntity, model);
         return model;
     }
 }
