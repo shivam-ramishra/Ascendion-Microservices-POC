@@ -13,4 +13,6 @@ public interface EmployeeService {
     List<Employee> findAll();
 
     Employee findEmployeeById(long employeeId) throws EmployeeNotFoundException;
+
+    List<Employee> findByClientId(String clientId);
 }

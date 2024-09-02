@@ -11,10 +11,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EmployeeNotFoundException.class)
+    @ExceptionHandler({EmployeeNotFoundException.class})
     public ResponseEntity<Map<String, String>> handleEmployeeNotFoundException(EmployeeNotFoundException e) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("No Existing Employee : ", e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler({ClientNotFoundException.class})
+    public ResponseEntity<Map<String, String>> handleClientNotFoundException(ClientNotFoundException e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("No Existing Client : ", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
     }
 

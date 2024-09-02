@@ -2,6 +2,7 @@ package base.service;
 
 
 import base.dto.EmployeeEntity;
+import base.exception.ClientNotFoundException;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
@@ -234,6 +235,39 @@ class EmployeeServiceTest {
 
         assertThrows(EmployeeNotFoundException.class,
                 () -> service.findEmployeeById(101L));
+    }
+
+    @Test
+    void findEmployeeByClientId_success() {
+        var entity = EmployeeEntity.builder()
+                .employeeId(101L)
+                .clientId("ABC_123")
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .email("demo@email.com")
+                .contact("9876543210")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
+
+        when(repo.findByClientId("ABC_123"))
+                .thenReturn(List.of(entity));
+
+        var emp = service.findByClientId("ABC_123");
+
+        assertEquals(1, emp.size());
+        assertEquals("FNAME", emp.get(0).getFirstName());
+    }
+
+    @Test
+    void findEmployeeByClientId_failure() {
+        when(repo.findByClientId(any()))
+                .thenThrow(ClientNotFoundException.class);
+
+        assertThrows(ClientNotFoundException.class,
+                () -> service.findByClientId("ABC_123"));
     }
 
 }

@@ -1,6 +1,7 @@
 package base.service;
 
 import base.dto.EmployeeEntity;
+import base.exception.ClientNotFoundException;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
@@ -73,5 +74,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepo.findById(employeeId)
                 .map(DtoConverter::entityToModel)
                 .orElseThrow(() -> new EmployeeNotFoundException(" with Id: " + employeeId));
+    }
+
+    @Override
+    public List<Employee> findByClientId(String clientId) {
+        try {
+            return employeeRepo.findByClientId(clientId)
+                    .stream()
+                    .map(DtoConverter::entityToModel)
+                    .toList();
+        } catch (Exception e) {
+            log.error("something went wrong to fetch Employees for Client ID with Error:: {}", e.getMessage());
+            throw new ClientNotFoundException("Ugh! Client Not Found");
+        }
     }
 }

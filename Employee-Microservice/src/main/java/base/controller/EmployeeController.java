@@ -46,4 +46,10 @@ public class EmployeeController {
     public Employee findEmployeeById(@PathVariable long employeeId) throws EmployeeNotFoundException {
         return employeeService.findEmployeeById(employeeId);
     }
+
+
+    @GetMapping("/clientId/{clientId}")
+    public List<Employee> findEmployeeByClientId(@PathVariable String clientId) {
+        return employeeService.findByClientId(clientId);
+    }
 }
