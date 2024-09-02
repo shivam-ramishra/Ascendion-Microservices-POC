@@ -2,7 +2,6 @@ package base.controller;
 
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
-import base.repo.EmployeeRepo;
 import base.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
@@ -34,9 +33,6 @@ class EmployeeControllerTest {
 
     @MockBean
     private EmployeeService service;
-
-    @MockBean
-    private EmployeeRepo repo;
 
     @Test
     void addOrUpdate_success() throws Exception {
@@ -89,7 +85,7 @@ class EmployeeControllerTest {
 
         mockMvc
                 .perform(
-                        post("/api/employee/addOrUpdate")
+                        post(BASE_URI + "addOrUpdate")
                                 .contentType("application/json")
                                 .content(new ObjectMapper().writeValueAsString(reqModel)))
                 .andExpect(status().isBadRequest())

@@ -20,7 +20,7 @@ public class EmployeeEntity {
     @Column(name = "EMP_ID")
     private Long employeeId;
 
-    private String firstName, lastName;
+    private String firstName, lastName, clientId;
 
     @Column(name = "DEPT")
     private String department;
