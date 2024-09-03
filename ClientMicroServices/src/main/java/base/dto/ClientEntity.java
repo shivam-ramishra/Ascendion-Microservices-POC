@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class ClientEntity {
     @Id
     @GeneratedValue
-    @Column(name = "CLI_ID")
+    @Column(name = "CLIENT_ID")
     private int id;
 
     private String firstName;
