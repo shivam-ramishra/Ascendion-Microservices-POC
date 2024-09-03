@@ -1,9 +1,12 @@
 package base.service;
 
 
+import base.client.ClientConsumer;
 import base.dto.EmployeeEntity;
 import base.exception.ClientNotFoundException;
 import base.exception.EmployeeNotFoundException;
+import base.exception.InvalidInputException;
+import base.model.Client;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,9 @@ class EmployeeServiceTest {
     @Mock
     private EmployeeRepo repo;
 
+    @Mock
+    private ClientConsumer clientConsumer;
+
     @InjectMocks
     private EmployeeServiceImpl service;
 
@@ -37,6 +43,7 @@ class EmployeeServiceTest {
         var reqModel = Employee.builder()
                 .firstName("FNAME")
                 .lastName("LNAME")
+                .clientId("CLIENT-1")
                 .email("demo@email.com")
                 .contact("123456789")
                 .salary(123.4)
@@ -50,6 +57,7 @@ class EmployeeServiceTest {
                 .employeeId(101L)
                 .firstName("FNAME")
                 .lastName("LNAME")
+                .clientId("CLIENT-1")
                 .email("demo@email.com")
                 .contact("123456789")
                 .salary(123.4)
@@ -62,6 +70,7 @@ class EmployeeServiceTest {
                 .employeeId(101L)
                 .firstName("FNAME")
                 .lastName("LNAME")
+                .clientId("CLIENT-1")
                 .email("demo@email.com")
                 .contact("123456789")
                 .salary(123.4)
@@ -70,6 +79,8 @@ class EmployeeServiceTest {
                 .dateOfJoining(new Date())
                 .build();
 
+        when(clientConsumer.findClientByClientName(any(String.class)))
+                .thenReturn(Client.builder().clientId(101).clientName("CLIENT-1").build());
         when(repo.save(any(EmployeeEntity.class)))
                 .thenReturn(respEntity);
 
@@ -92,12 +103,8 @@ class EmployeeServiceTest {
                 .dateOfJoining(new Date())
                 .build();
 
-        when(repo.save(any(EmployeeEntity.class)))
-                .thenThrow(new RuntimeException());
-
-        Employee savedEmp = service.addOrUpdateEmployee(reqModel);
-
-        assertNull(savedEmp);
+        assertThrows(InvalidInputException.class,
+                () -> service.addOrUpdateEmployee(reqModel));
     }
 
     @Test

@@ -1,8 +1,11 @@
 package base.service;
 
+import base.client.ClientConsumer;
 import base.dto.EmployeeEntity;
 import base.exception.ClientNotFoundException;
 import base.exception.EmployeeNotFoundException;
+import base.exception.InvalidInputException;
+import base.model.Client;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
 import base.utils.DtoConverter;
@@ -24,19 +27,35 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepo employeeRepo;
 
+    @Autowired
+    private ClientConsumer clientConsumer;
+
     @Override
     public Employee addOrUpdateEmployee(Employee emp) {
-        try {
-            EmployeeEntity empEntity = modelToEntity(emp);
-            EmployeeEntity savedEmp = employeeRepo.save(empEntity);
-            Employee empModel = entityToModel(savedEmp);
+        if (emp != null && emp.getClientId() != null) {
+            Client client = null;
+            try {
+                client = clientConsumer.findClientByClientName(emp.getClientId());
+            } catch (Exception e) {
+                log.error("Error occurred while fetching client details");
+                throw new ClientNotFoundException("Client not found.");
+            }
+            if (client != null) {
+                try {
+                    EmployeeEntity empEntity = modelToEntity(emp);
+                    EmployeeEntity savedEmp = employeeRepo.save(empEntity);
+                    Employee empModel = entityToModel(savedEmp);
 
-            log.info("Employee Saved to DB: {}", empModel);
-            return empModel;
-        } catch (Exception e) {
-            log.error("Something went wrong to save|update employee:: {} with error:: {}", emp, e.getMessage());
-            return null;
+                    log.info("Employee Saved to DB: {}", empModel);
+                    return empModel;
+                } catch (Exception e) {
+                    log.error("Something went wrong to save|update employee:: {} with error:: {}", emp, e.getMessage());
+                    throw new RuntimeException(e.getMessage());
+                }
+            } else
+                throw new ClientNotFoundException("Couldn't save employee details. Client not found");
         }
+        throw new InvalidInputException("Couldn't save employee details. Bad Request");
     }
 
 

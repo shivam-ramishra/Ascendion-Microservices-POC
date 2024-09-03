@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +19,11 @@ import lombok.NoArgsConstructor;
 public class ClientEntity {
     @Id
     @GeneratedValue
-    @Column(name = "CLI_ID")
-    private int id;
+    @Column(name = "CLIENT_ID")
+    private Integer clientId;
 
-    private String firstName;
-    private String lastName;
+    @Column(unique = true, nullable = false)
+    @NotEmpty
+    @NotBlank
+    private String clientName;
 }

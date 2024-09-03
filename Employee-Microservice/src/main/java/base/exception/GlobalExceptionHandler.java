@@ -18,11 +18,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
     }
 
-    @ExceptionHandler({ClientNotFoundException.class})
-    public ResponseEntity<Map<String, String>> handleClientNotFoundException(ClientNotFoundException e) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("No Existing Client : ", e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+
+    @ExceptionHandler({InvalidInputException.class, ClientNotFoundException.class})
+    public ResponseEntity<String> handleClientNotFoundException(Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)

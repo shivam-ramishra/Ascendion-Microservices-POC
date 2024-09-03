@@ -1,11 +1,19 @@
 package base.exception;
 
-public class ClientNotFoundException extends Exception{
+public class ClientNotFoundException extends Exception {
     private int id;
-    public ClientNotFoundException(int id){
+    private String name;
+
+    public ClientNotFoundException(int id) {
         this.id = id;
     }
-    public String getMessage(){
+
+    public ClientNotFoundException(String name) {
+        this.name = name;
+    }
+
+    public String getMessage() {
         return "Client with id " + id + " not found";
     }
 }
+

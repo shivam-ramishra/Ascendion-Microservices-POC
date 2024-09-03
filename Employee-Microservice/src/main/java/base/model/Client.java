@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class Client {
     private Integer clientId;
-
     private String clientName;
 
 }

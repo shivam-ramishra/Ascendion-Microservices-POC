@@ -1,9 +1,9 @@
 package base.service;
 
 import base.dto.ClientEntity;
-import base.model.Client;
 import base.exception.ClientNotFoundException;
 import base.exception.NoClientsFoundException;
+import base.model.Client;
 import base.repo.ClientRepo;
 import base.utils.DtoConverter;
 import org.slf4j.Logger;
@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static base.utils.DtoConverter.entityToModel;
 import static base.utils.DtoConverter.modelToEntity;
@@ -23,18 +21,19 @@ import static base.utils.DtoConverter.modelToEntity;
 public class ClientServiceImpl implements ClientService {
 
     private static final Logger log = LoggerFactory.getLogger(ClientServiceImpl.class);
+
     @Autowired
-    ClientRepo repo;
+    private ClientRepo repo;
 
     @Override
     public Client addOrUpdateClient(Client client) {
-        try{
+        try {
             ClientEntity clientEntity = modelToEntity(client);
             ClientEntity savedClient = repo.save(clientEntity);
             Client cliModel = entityToModel(savedClient);
             log.info("New client created");
             return cliModel;
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Something went wrong to save|update employee:: {} with error:: {}", client, e.getMessage());
             return null;
         }
@@ -47,23 +46,23 @@ public class ClientServiceImpl implements ClientService {
                     .stream()
                     .map(DtoConverter::entityToModel)
                     .toList();
-        }catch (Exception e){
-            log.error("Something went wrong to get client list", e.getMessage());
-            return Collections.emptyList();
+        } catch (Exception e) {
+            log.error("Something went wrong to get client list with error :: {}", e.getMessage());
+            throw new NoClientsFoundException(e.getMessage());
         }
     }
 
     @Override
     public boolean deleteClient(int id) throws ClientNotFoundException {
         Client client = findClientById(id);
-        if(client != null){
-            try{
-            repo.deleteById(client.getId());
-            log.info("Client deleted successfully", id);
-            return true;
-        }catch (Exception e){
-            log.error("Something went wrong to delete client:: {} with error:: {}", client, e.getMessage());
-            return false;
+        if (client != null) {
+            try {
+                repo.deleteById(client.getClientId());
+                log.info("Client deleted successfully : {}", id);
+                return true;
+            } catch (Exception e) {
+                log.error("Something went wrong to delete client:: {} with error:: {}", client, e.getMessage());
+                return false;
             }
         }
         throw new ClientNotFoundException(id);
@@ -74,6 +73,13 @@ public class ClientServiceImpl implements ClientService {
         return repo.findById(id)
                 .map(DtoConverter::entityToModel)
                 .orElseThrow(() -> new ClientNotFoundException(id));
+    }
+
+    @Override
+    public Client findClientByName(String name) throws ClientNotFoundException {
+        return repo.findByClientName(name)
+                .map(DtoConverter::entityToModel)
+                .orElseThrow(() -> new ClientNotFoundException(name));
     }
 
 }

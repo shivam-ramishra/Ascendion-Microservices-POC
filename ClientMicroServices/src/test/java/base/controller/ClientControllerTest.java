@@ -1,6 +1,6 @@
 package base.controller;
 
-import base.exception.ClientNotFoundException;
+import base.exception.NoClientsFoundException;
 import base.model.Client;
 import base.service.ClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,9 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ClientController.class)
-public class ClientControllerTest {
+class ClientControllerTest {
 
-    static final String BASE_URI = "/api/client";
+    private static final String BASE_URI = "/api/client/";
 
     @Autowired
     MockMvc mockMvc;
@@ -34,35 +34,32 @@ public class ClientControllerTest {
     private ClientService service;
 
     @Test
-    void addOrUpdate_success() throws Exception{
+    void addOrUpdate_success() throws Exception {
         Client reqModel = Client.builder()
-                .firstName("FIRST")
-                .lastName("LAST")
+                .clientName("CLIENT-1")
                 .build();
         Client respModel = Client.builder()
-                .id(1)
-                .firstName("FIRST")
-                .lastName("LAST")
+                .clientId(1)
+                .clientName("CLIENT-1")
                 .build();
 
         when(service.addOrUpdateClient(reqModel))
                 .thenReturn(respModel);
 
         mockMvc
-                .perform( post(BASE_URI + "addOrUpdate")
+                .perform(post(BASE_URI + "addOrUpdate")
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(reqModel)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", Is.is(1)))
-                .andExpect(jsonPath("$.lastName", Is.is("LAST")))
+                .andExpect(jsonPath("$.clientId", Is.is(1)))
+                .andExpect(jsonPath("$.clientName", Is.is("CLIENT-1")))
                 .andDo(print());
     }
 
     @Test
-    void addOrUpdate_failure() throws Exception{
+    void addOrUpdate_failure() throws Exception {
         Client reqModel = Client.builder()
-                .firstName("FIRST")
-                .lastName("LAST")
+                .clientName("CLIENT-1")
                 .build();
 
         when(service.addOrUpdateClient(reqModel))
@@ -78,7 +75,7 @@ public class ClientControllerTest {
 
     @Test
     void deleteEmp_success() throws Exception {
-        final String URL = BASE_URI +"delete/1";
+        final String URL = BASE_URI + "delete/1";
         when(service.deleteClient(1))
                 .thenReturn(true);
 
@@ -105,14 +102,12 @@ public class ClientControllerTest {
         final String URL = BASE_URI + "findAll";
 
         Client cli1 = Client.builder()
-                .id(1)
-                .firstName("CLIENT1")
-                .lastName("LAST1")
+                .clientId(1)
+                .clientName("CLIENT-1")
                 .build();
         Client cli2 = Client.builder()
-                .id(2)
-                .firstName("CLIENT2")
-                .lastName("LAST2")
+                .clientId(2)
+                .clientName("CLIENT-2")
                 .build();
 
         when(service.getClients())
@@ -121,10 +116,10 @@ public class ClientControllerTest {
         mockMvc
                 .perform(get(URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", Is.is(1)))
-                .andExpect(jsonPath("$[1].id", Is.is(2)))
-                .andExpect(jsonPath("$[0].firstName", Is.is("CLIENT1")))
-                .andExpect(jsonPath("$[1].firstName", Is.is("CLIENT2")))
+                .andExpect(jsonPath("$[0].clientId", Is.is(1)))
+                .andExpect(jsonPath("$[1].clientId", Is.is(2)))
+                .andExpect(jsonPath("$[0].clientName", Is.is("CLIENT-1")))
+                .andExpect(jsonPath("$[1].clientName", Is.is("CLIENT-2")))
                 .andDo(print());
     }
 
@@ -132,10 +127,11 @@ public class ClientControllerTest {
     void findAll_failure() throws Exception {
         final String URL = BASE_URI + "findAll";
 
-        when(service.getClients()).thenThrow(new RuntimeException(""));
+        when(service.getClients()).thenThrow(new NoClientsFoundException(""));
+
         mockMvc
                 .perform(get(URL))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNoContent())
                 .andDo(print());
     }
 }
