@@ -1,6 +1,6 @@
 package base.exception;
 
-import base.dto.Client;
+import base.model.Client;
 
 import java.util.ArrayList;
 import java.util.List;
