@@ -1,18 +1,11 @@
-package base.dto;
+package base.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
-@Entity
-@NoArgsConstructor@AllArgsConstructor
-@Getter@Setter
-@ToString
-@EqualsAndHashCode
+@Data
+@Builder
 public class Client {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String firstName;
     private String lastName;
