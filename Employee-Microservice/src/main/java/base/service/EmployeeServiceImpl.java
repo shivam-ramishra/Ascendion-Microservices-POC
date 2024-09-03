@@ -79,13 +79,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> findByClientId(String clientId) {
         try {
-            return employeeRepo.findByClientId(clientId)
+            List<Employee> empList = employeeRepo.findByClientId(clientId)
                     .stream()
                     .map(DtoConverter::entityToModel)
                     .toList();
+
+            if (empList.isEmpty())
+                throw new ClientNotFoundException("Ugh! Client Not Found");
+
+            return empList;
+        } catch (ClientNotFoundException e) {
+            log.error("Client not found:: {}", e.getMessage());
+            throw new ClientNotFoundException("Client not found.");
         } catch (Exception e) {
             log.error("something went wrong to fetch Employees for Client ID with Error:: {}", e.getMessage());
-            throw new ClientNotFoundException("Ugh! Client Not Found");
+            throw new RuntimeException("Ugh! Something went wrong");
         }
     }
 }

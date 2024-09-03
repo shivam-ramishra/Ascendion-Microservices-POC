@@ -262,11 +262,20 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findEmployeeByClientId_failure() {
+    void findEmployeeByClientId_noContent() {
         when(repo.findByClientId(any()))
-                .thenThrow(ClientNotFoundException.class);
+                .thenReturn(emptyList());
 
         assertThrows(ClientNotFoundException.class,
+                () -> service.findByClientId("ABC_123"));
+    }
+
+    @Test
+    void findEmployeeByClientId_failure() {
+        when(repo.findByClientId(any()))
+                .thenThrow(RuntimeException.class);
+
+        assertThrows(RuntimeException.class,
                 () -> service.findByClientId("ABC_123"));
     }
 

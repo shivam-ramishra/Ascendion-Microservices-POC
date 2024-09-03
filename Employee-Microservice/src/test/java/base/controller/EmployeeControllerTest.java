@@ -1,5 +1,6 @@
 package base.controller;
 
+import base.exception.ClientNotFoundException;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.service.EmployeeService;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -203,4 +205,67 @@ class EmployeeControllerTest {
                 .andExpect(status().isNoContent())
                 .andDo(print());
     }
+
+    @Test
+    void findEmployeeByClientId_success() throws Exception {
+        final String URL = BASE_URI + "clientId/CLIENT_1-EMP";
+
+        Employee emp1 = Employee.builder()
+                .employeeId(101L)
+                .clientId("CLIENT_1-EMP")
+                .firstName("EMP")
+                .lastName("1")
+                .email("emp1@email.com")
+                .contact("1234567890")
+                .salary(123.4)
+                .department("IT")
+                .build();
+        Employee emp2 = Employee.builder()
+                .employeeId(102L)
+                .clientId("CLIENT_1-EMP")
+                .firstName("EMP")
+                .lastName("2")
+                .email("emp2@email.com")
+                .contact("1234567890")
+                .salary(123.4)
+                .department("IT")
+                .build();
+
+        when(service.findByClientId(any(String.class)))
+                .thenReturn(List.of(emp1, emp2));
+
+        mockMvc
+                .perform(get(URL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].employeeId", Is.is(101)))
+                .andExpect(jsonPath("$[1].employeeId", Is.is(102)))
+                .andExpect(jsonPath("$[0].firstName", Is.is("EMP")))
+                .andExpect(jsonPath("$[1].firstName", Is.is("EMP")))
+                .andDo(print());
+    }
+
+    @Test
+    void findEmployeeByClientId_clientNotFoundFailure() throws Exception {
+        final String URL = BASE_URI + "clientId/CLIENT_1-EMP";
+
+        when(service.findByClientId(any(String.class)))
+                .thenThrow(ClientNotFoundException.class);
+        mockMvc
+                .perform(get(URL))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+    }
+
+    @Test
+    void findEmployeeByClientId_failure() throws Exception {
+        final String URL = BASE_URI + "clientId/CLIENT_1-EMP";
+
+        when(service.findByClientId(any(String.class)))
+                .thenThrow(RuntimeException.class);
+        mockMvc
+                .perform(get(URL))
+                .andExpect(status().isInternalServerError())
+                .andDo(print());
+    }
+
 }
