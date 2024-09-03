@@ -9,7 +9,10 @@ import java.util.Date;
 @Builder
 public class Employee {
     private Long employeeId;
-    private String firstName, lastName, department, email, contact, lastModifiedBy;
+
+    private String clientId, firstName, lastName, department, email, contact;
+
+    private String lastModifiedBy;
 
     private double salary;
     private boolean isActive;

@@ -23,7 +23,7 @@ public class EmployeeController {
         Employee employee = employeeService.addOrUpdateEmployee(emp);
 
         return (employee != null)
-                ? new ResponseEntity<>(emp, HttpStatus.CREATED) :
+                ? new ResponseEntity<>(employee, HttpStatus.CREATED) :
                 new ResponseEntity<>("Couldn't save employee details.", HttpStatus.BAD_REQUEST);
     }
 
@@ -46,5 +46,11 @@ public class EmployeeController {
     @GetMapping("/id/{employeeId}")
     public Employee findEmployeeById(@PathVariable long employeeId) throws EmployeeNotFoundException {
         return employeeService.findEmployeeById(employeeId);
+    }
+
+
+    @GetMapping("/clientId/{clientId}")
+    public List<Employee> findEmployeeByClientId(@PathVariable String clientId) {
+        return employeeService.findByClientId(clientId);
     }
 }
