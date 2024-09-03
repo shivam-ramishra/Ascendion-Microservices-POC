@@ -1,6 +1,5 @@
 package base.controller;
 
-import base.dto.EmployeeEntity;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.service.EmployeeService;
