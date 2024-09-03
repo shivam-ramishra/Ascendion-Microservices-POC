@@ -20,7 +20,7 @@ public class ClientController {
     public ResponseEntity<?> addOrUpdate(@RequestBody Client client) {
         Client client1 = clientService.addOrUpdateClient(client);
         return  (client1 != null) ?
-                 new ResponseEntity<>(client, HttpStatus.CREATED) :
+                 new ResponseEntity<>(client1, HttpStatus.CREATED) :
         new ResponseEntity<>("Couldn't save client details.", HttpStatus.BAD_REQUEST);
     }
     @GetMapping
