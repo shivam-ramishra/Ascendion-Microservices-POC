@@ -46,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     EmployeeEntity savedEmp = employeeRepo.save(empEntity);
                     Employee empModel = entityToModel(savedEmp);
 
-                    log.info("Employee Saved to DB: {}", empModel);
+                    log.info("Employee Saved to DB, emp data: {}", empModel);
                     return empModel;
                 } catch (Exception e) {
                     log.error("Something went wrong to save|update employee:: {} with error:: {}", emp, e.getMessage());
