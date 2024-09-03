@@ -1,8 +1,8 @@
 package base.controller;
 
-import base.model.Client;
 import base.exception.ClientNotFoundException;
 import base.exception.NoClientsFoundException;
+import base.model.Client;
 import base.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,17 +16,20 @@ import java.util.List;
 public class ClientController {
     @Autowired
     private ClientService clientService;
+
     @PostMapping("/addOrUpdate")
     public ResponseEntity<?> addOrUpdate(@RequestBody Client client) {
         Client client1 = clientService.addOrUpdateClient(client);
-        return  (client1 != null) ?
-                 new ResponseEntity<>(client, HttpStatus.CREATED) :
-        new ResponseEntity<>("Couldn't save client details.", HttpStatus.BAD_REQUEST);
+        return (client1 != null) ?
+                new ResponseEntity<>(client, HttpStatus.CREATED) :
+                new ResponseEntity<>("Couldn't save client details.", HttpStatus.BAD_REQUEST);
     }
+
     @GetMapping
     public List<Client> getAllClients() throws NoClientsFoundException {
         return clientService.getClients();
     }
+
     @DeleteMapping("/delete/{id}")
     ResponseEntity<String> deleteClient(@PathVariable int id) throws ClientNotFoundException {
         boolean deleted = clientService.deleteClient(id);
