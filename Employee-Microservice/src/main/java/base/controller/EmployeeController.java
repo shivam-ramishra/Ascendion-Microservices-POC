@@ -1,6 +1,5 @@
 package base.controller;
 
-import base.dto.EmployeeEntity;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 import base.service.EmployeeService;
@@ -51,6 +50,6 @@ public class EmployeeController {
 
     @GetMapping("/clientId/{clientId}")
     public List<Employee> findEmployeeByClientId(@PathVariable String clientId) {
-        return employeeService.findByClientId(clientId);
+        return employeeService.findByClientName(clientId);
     }
 }

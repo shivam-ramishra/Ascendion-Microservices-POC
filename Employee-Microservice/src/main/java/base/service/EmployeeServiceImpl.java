@@ -32,10 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee addOrUpdateEmployee(Employee emp) {
-        if (emp != null && emp.getClientId() != null) {
+        if (emp != null && emp.getClientName() != null) {
             Client client = null;
             try {
-                client = clientConsumer.findClientByClientName(emp.getClientId());
+                client = clientConsumer.findClientByClientName(emp.getClientName());
             } catch (Exception e) {
                 log.error("Error occurred while fetching client details");
                 throw new ClientNotFoundException("Client not found.");
@@ -96,9 +96,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findByClientId(String clientId) {
+    public List<Employee> findByClientName(String clientName) {
         try {
-            return employeeRepo.findByClientId(clientId)
+            return employeeRepo.findByClientName(clientName)
                     .stream()
                     .map(DtoConverter::entityToModel)
                     .toList();

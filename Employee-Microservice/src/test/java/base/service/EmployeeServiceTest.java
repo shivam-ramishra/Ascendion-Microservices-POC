@@ -43,7 +43,7 @@ class EmployeeServiceTest {
         var reqModel = Employee.builder()
                 .firstName("FNAME")
                 .lastName("LNAME")
-                .clientId("CLIENT-1")
+                .clientName("CLIENT-1")
                 .email("demo@email.com")
                 .contact("123456789")
                 .salary(123.4)
@@ -57,7 +57,7 @@ class EmployeeServiceTest {
                 .employeeId(101L)
                 .firstName("FNAME")
                 .lastName("LNAME")
-                .clientId("CLIENT-1")
+                .clientName("CLIENT-1")
                 .email("demo@email.com")
                 .contact("123456789")
                 .salary(123.4)
@@ -70,7 +70,7 @@ class EmployeeServiceTest {
                 .employeeId(101L)
                 .firstName("FNAME")
                 .lastName("LNAME")
-                .clientId("CLIENT-1")
+                .clientName("CLIENT-1")
                 .email("demo@email.com")
                 .contact("123456789")
                 .salary(123.4)
@@ -248,7 +248,7 @@ class EmployeeServiceTest {
     void findEmployeeByClientId_success() {
         var entity = EmployeeEntity.builder()
                 .employeeId(101L)
-                .clientId("ABC_123")
+                .clientName("ABC_123")
                 .firstName("FNAME")
                 .lastName("LNAME")
                 .email("demo@email.com")
@@ -259,10 +259,10 @@ class EmployeeServiceTest {
                 .dateOfJoining(new Date())
                 .build();
 
-        when(repo.findByClientId("ABC_123"))
+        when(repo.findByClientName("ABC_123"))
                 .thenReturn(List.of(entity));
 
-        var emp = service.findByClientId("ABC_123");
+        var emp = service.findByClientName("ABC_123");
 
         assertEquals(1, emp.size());
         assertEquals("FNAME", emp.get(0).getFirstName());
@@ -270,11 +270,11 @@ class EmployeeServiceTest {
 
     @Test
     void findEmployeeByClientId_failure() {
-        when(repo.findByClientId(any()))
+        when(repo.findByClientName(any()))
                 .thenThrow(ClientNotFoundException.class);
 
         assertThrows(ClientNotFoundException.class,
-                () -> service.findByClientId("ABC_123"));
+                () -> service.findByClientName("ABC_123"));
     }
 
 }

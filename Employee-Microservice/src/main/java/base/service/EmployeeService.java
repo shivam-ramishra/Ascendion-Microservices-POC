@@ -1,6 +1,5 @@
 package base.service;
 
-import base.dto.EmployeeEntity;
 import base.exception.EmployeeNotFoundException;
 import base.model.Employee;
 
@@ -15,5 +14,5 @@ public interface EmployeeService {
 
     Employee findEmployeeById(long employeeId) throws EmployeeNotFoundException;
 
-    List<Employee> findByClientId(String clientId);
+    List<Employee> findByClientName(String clientName);
 }
