@@ -1,0 +1,25 @@
+server:
+  port: 8889
+
+spring:
+  application:
+    name: EMPLOYEE-SERVICE
+  datasource:
+    url: jdbc:h2:mem:employeeDb
+    driverClassName: org.h2.Driver
+    username: emp
+    password: emp
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8888}/eureka
+
+logging:
+  level:
+    root: DEBUG
