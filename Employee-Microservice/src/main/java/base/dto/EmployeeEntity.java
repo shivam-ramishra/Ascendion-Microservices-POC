@@ -24,7 +24,7 @@ public class EmployeeEntity {
     @Column(name = "EMP_ID")
     private Long employeeId;
 
-    private String firstName, lastName, clientId;
+    private String firstName, lastName, clientName;
 
     @Column(name = "DEPT")
     private String department;
