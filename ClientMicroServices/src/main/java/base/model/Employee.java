@@ -10,7 +10,7 @@ import java.util.Date;
 public class Employee {
     private Long employeeId;
 
-    private String clientId, firstName, lastName, department, email, contact;
+    private String clientName, firstName, lastName, department, email, contact;
 
     private String lastModifiedBy;
 
