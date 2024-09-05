@@ -1,10 +1,10 @@
 package base.exception;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor@NoArgsConstructor
-@Getter@Setter
-@ToString
+@Data
+@NoArgsConstructor
 public class ErrorMessages {
     private int errorCode;
     private String errorMessage;
