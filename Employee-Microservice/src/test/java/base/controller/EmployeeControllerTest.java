@@ -1,6 +1,7 @@
 package base.controller;
 
 import base.exception.EmployeeNotFoundException;
+import base.model.Client;
 import base.model.Employee;
 import base.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeControllerTest {
 
     static final String BASE_URI = "/api/employee/";
-
 
     @Autowired
     MockMvc mockMvc;
@@ -92,6 +93,7 @@ class EmployeeControllerTest {
                 .andDo(print());
 
     }
+
 
     @Test
     void deleteEmp_success() throws Exception {
@@ -202,5 +204,45 @@ class EmployeeControllerTest {
                 .perform(get(URL))
                 .andExpect(status().isNoContent())
                 .andDo(print());
+    }
+
+    @Test
+    void findEmployeeByClientId_success() throws Exception {
+        final String URL = BASE_URI + "/clientId/1L";
+
+        Employee emp1 = Employee.builder()
+                .employeeId(102L)
+                .firstName("EMP2")
+                .lastName("2")
+                .clientName("1L")
+                .email("emp2@email.com")
+                .contact("1234567890")
+                .salary(123.4)
+                .department("IT")
+                .build();
+
+        Employee emp2 = Employee.builder()
+                .employeeId(102L)
+                .firstName("EMP2")
+                .lastName("2")
+                .clientName("1L")
+                .email("emp2@email.com")
+                .contact("1234567890")
+                .salary(123.4)
+                .department("IT")
+                .build();
+
+        List<Employee> clients = new ArrayList<>();
+        clients.add(emp1);
+        clients.add(emp2);
+        when(service.findByClientName("1L"))
+                .thenReturn(clients);
+
+        mockMvc
+                .perform(get(URL))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+
     }
 }
