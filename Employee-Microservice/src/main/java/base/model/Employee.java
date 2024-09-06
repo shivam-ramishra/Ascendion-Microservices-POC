@@ -10,11 +10,23 @@ import java.util.Date;
 public class Employee {
     private Long employeeId;
 
-    private String clientName, firstName, lastName, department, email, contact;
+    private String clientName;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String department;
+
+    private String email;
+
+    private String contact;
 
     private String lastModifiedBy;
 
     private double salary;
+
     private boolean isActive;
+
     private Date dateOfJoining;
 }
