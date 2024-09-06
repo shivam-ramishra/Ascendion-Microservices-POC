@@ -9,9 +9,9 @@ import base.model.Client;
 import base.model.Employee;
 import base.repo.EmployeeRepo;
 import base.utils.DtoConverter;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,14 +20,13 @@ import static base.utils.DtoConverter.entityToModel;
 import static base.utils.DtoConverter.modelToEntity;
 
 @Service
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
     private static final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
-    @Autowired
     private EmployeeRepo employeeRepo;
 
-    @Autowired
     private ClientConsumer clientConsumer;
 
     @Override
@@ -49,15 +48,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                     log.info("Employee Saved to DB, emp data: {}", empModel);
                     return empModel;
                 } catch (Exception e) {
-                    log.error("Something went wrong to save|update employee:: {} with error:: {}", emp, e.getMessage());
-                    throw new RuntimeException(e.getMessage());
+                    throw new EmployeeNotFoundException("Something went wrong to save or update employee Id: "+emp.getEmployeeId() +" with error: "+e.getMessage());
                 }
             } else
                 throw new ClientNotFoundException("Couldn't save employee details. Client not found");
         }
         throw new InvalidInputException("Couldn't save employee details. Bad Request");
     }
-
 
     @Override
     public boolean deleteEmployee(long employeeId) throws EmployeeNotFoundException {
@@ -83,8 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .map(DtoConverter::entityToModel)
                     .toList();
         } catch (Exception e) {
-            log.error("something went wrong to fetch Employees with Error:: {}", e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            throw new EmployeeNotFoundException("something went wrong to fetch Employees with Error: "+e.getMessage());
         }
     }
 

@@ -24,7 +24,11 @@ public class EmployeeEntity {
     @Column(name = "EMP_ID")
     private Long employeeId;
 
-    private String firstName, lastName, clientName;
+    private String firstName;
+
+    private String lastName;
+
+    private String clientName;
 
     @Column(name = "DEPT")
     private String department;
