@@ -1,6 +1,7 @@
 package base.service;
 
 import base.dto.ClientEntity;
+import base.exception.ApplicationException;
 import base.exception.ClientNotFoundException;
 import base.exception.NoClientsFoundException;
 import base.model.Client;
@@ -81,18 +82,18 @@ class ClientServiceTest {
     }
 
     @Test
-    void deleteClient_ClientNotFound() throws ClientNotFoundException {
+    void deleteClient_ClientNotFound() {
         var respEntity = ClientEntity.builder()
                 .clientId(1)
                 .clientName("CLIENT-1")
                 .build();
 
-        when(repo.findById(1))
+        when(repo.findById(any()))
                 .thenReturn(ofNullable(respEntity));
-        doThrow(new RuntimeException()).when(repo).deleteById(any());
+        doThrow(ApplicationException.class).when(repo).deleteById(any());
 
-        boolean deleted = service.deleteClient(1);
-        assertFalse(deleted);
+        assertThrows(ApplicationException.class,
+                () -> service.deleteClient(1));
     }
 
     @Test
@@ -100,7 +101,7 @@ class ClientServiceTest {
         when(repo.findById(123))
                 .thenReturn(Optional.empty());
 
-        assertThrows(ClientNotFoundException.class, () -> {
+        assertThrows(ApplicationException.class, () -> {
             service.deleteClient(123);
         });
 
@@ -141,11 +142,11 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_failure_error(){
+    void findAll_failure_error() {
         when(repo.findAll())
                 .thenThrow(new RuntimeException("Connection Error"));
 
-        assertThrows(NoClientsFoundException.class, () -> {
+        assertThrows(ApplicationException.class, () -> {
             service.getClients();
         });
     }
@@ -174,7 +175,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findClientByName_Success() throws ClientNotFoundException {
+    void findClientByName_Success() {
         var entity = ClientEntity.builder()
                 .clientId(1)
                 .clientName("CLIENT-1")
@@ -185,15 +186,15 @@ class ClientServiceTest {
 
         var emp = service.findClientByName("CLIENT-1");
 
-        assertEquals("CLIENT-1",emp.getClientName());
+        assertEquals("CLIENT-1", emp.getClientName());
     }
 
     @Test
-    void findClientByName_failure(){
+    void findClientByName_failure() {
         when(repo.findByClientName(any()))
-                .thenThrow(NoClientsFoundException.class);
+                .thenReturn(Optional.empty());
 
-        assertThrows(NoClientsFoundException.class,
-                ()-> service.findClientByName("CLIENT-1"));
+        assertThrows(ApplicationException.class,
+                () -> service.findClientByName("CLIENT-1"));
     }
 }

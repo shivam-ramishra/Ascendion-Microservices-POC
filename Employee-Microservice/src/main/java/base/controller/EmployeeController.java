@@ -6,13 +6,7 @@ import base.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +20,6 @@ public class EmployeeController {
     @PostMapping("/addOrUpdate")
     public ResponseEntity<Object> addEmployee(@RequestBody Employee emp) {
         Employee employee = employeeService.addOrUpdateEmployee(emp);
-
         return (employee != null)
                 ? new ResponseEntity<>(employee, HttpStatus.CREATED) :
                 new ResponseEntity<>("Couldn't save employee details.", HttpStatus.BAD_REQUEST);
@@ -35,11 +28,9 @@ public class EmployeeController {
     @DeleteMapping("/delete/{employeeId}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long employeeId) throws EmployeeNotFoundException {
         boolean isDeleted = employeeService.deleteEmployee(employeeId);
-
-        if (isDeleted) {
-            return ResponseEntity.ok("Employee deleted successfully");
-        }
-        return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        return isDeleted ?
+                ResponseEntity.ok("Employee deleted successfully") :
+                new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/findAll")

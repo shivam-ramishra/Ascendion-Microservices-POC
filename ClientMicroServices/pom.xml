@@ -93,7 +93,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -125,11 +124,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <systemPropertyVariable>
-                        <jacoco-agent.destFile>target/jacoco.exec</jacoco-agent.destFile>
-                    </systemPropertyVariable>
-
                     <excludes>
+                        <exclude>base/*.class</exclude>
                         <exclude>base/dto/*.class</exclude>
                         <exclude>base/model/*.class</exclude>
                         <exclude>base/repo/*.class</exclude>

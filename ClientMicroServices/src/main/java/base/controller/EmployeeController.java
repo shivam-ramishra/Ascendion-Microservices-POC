@@ -27,7 +27,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/findEmployeeDetails/{employeeId}")
-    public ResponseEntity<?> findEmployeeDetails(@PathVariable String employeeId) {
+    public ResponseEntity<Object> findEmployeeDetails(@PathVariable String employeeId) {
         try {
             Employee employee = restClient.get()
                     .uri("/id/{employeeId}", employeeId)

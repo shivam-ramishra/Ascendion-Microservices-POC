@@ -92,7 +92,13 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveOrUpdate_failure() {
+    void saveOrUpdate_inputNullFailure() {
+        assertThrows(InvalidInputException.class,
+                () -> service.addOrUpdateEmployee(null));
+    }
+
+    @Test
+    void saveOrUpdate_inputClientIdNullFailure() {
         var reqModel = Employee.builder()
                 .firstName("FNAME")
                 .lastName("LNAME")
@@ -108,6 +114,91 @@ class EmployeeServiceTest {
                 () -> service.addOrUpdateEmployee(reqModel));
 
     }
+
+    @Test
+    void saveOrUpdate_clientConsumerReturnsNull() {
+        var reqModel = Employee.builder()
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CLIENT-1")
+                .email("demo@email.com")
+                .contact("123456789")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
+
+        when(clientConsumer.findClientByClientName(any(String.class)))
+                .thenReturn(null);
+
+        assertThrows(ClientNotFoundException.class,
+                () -> service.addOrUpdateEmployee(reqModel));
+    }
+
+    @Test
+    void saveOrUpdate_ClientNameNotFound() {
+        var reqModel = Employee.builder()
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CLIENT-1")
+                .email("demo@email.com")
+                .contact("123456789")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
+
+        when(clientConsumer.findClientByClientName(any(String.class)))
+                .thenThrow(new RuntimeException("Client not found."));
+
+        assertThrows(ClientNotFoundException.class,
+                () -> service.addOrUpdateEmployee(reqModel));
+    }
+
+    @Test
+    void addOrUpdate_somethingWentWrong() {
+        var reqModel = Employee.builder()
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CLIENT-1")
+                .email("demo@email.com")
+                .contact("123456789")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
+
+        when(clientConsumer.findClientByClientName(any(String.class)))
+                .thenReturn(Client.builder().clientId(101).clientName("CLIENT-1").build());
+        when(repo.save(any(EmployeeEntity.class)))
+                .thenThrow(RuntimeException.class);
+
+        assertThrows(RuntimeException.class, () -> service.addOrUpdateEmployee(reqModel));
+    }
+//
+//    @Test
+//    void addOrUpdate_ClientNotFound() {
+//        var reqModel = Employee.builder()
+//                .firstName("FNAME")
+//                .lastName("LNAME")
+//                .clientName("CLIENT-1")
+//                .email("demo@email.com")
+//                .contact("123456789")
+//                .salary(123.4)
+//                .department("SYS")
+//                .isActive(true)
+//                .dateOfJoining(new Date())
+//                .build();
+//
+//        when(clientConsumer.findClientByClientName("CLIENT-1"))
+//                .thenThrow(ClientNotFoundException.class);
+//
+//        assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
+//    }
+
 
     @Test
     void deleteEmployee_success() {
@@ -288,81 +379,6 @@ class EmployeeServiceTest {
 
         assertThrows(RuntimeException.class, () -> service.findAll());
     }
-
-    @Test
-    void saveOrUpdate_ClientNameNotFound() {
-        var entity = EmployeeEntity.builder()
-                .employeeId(101L)
-                .firstName("FNAME")
-                .lastName("LNAME")
-                .clientName("CNAME")
-                .department("SYS")
-                .email("demo@email.com")
-                .contact("9876543210")
-                .salary(123.4)
-                .isActive(true)
-                .dateOfJoining(new Date())
-                .updatedDate(new Date())
-                .lastModifiedBy("Today")
-                .build();
-
-        var reqModel = Employee.builder()
-                .firstName("FNAME")
-                .lastName("LNAME")
-                .clientName("CLIENT-1")
-                .email("demo@email.com")
-                .contact("123456789")
-                .salary(123.4)
-                .department("SYS")
-                .isActive(true)
-                .dateOfJoining(new Date())
-                .build();
-
-        when(clientConsumer.findClientByClientName(entity.getClientName()))
-                .thenThrow(new ClientNotFoundException("Client not found."));
-
-        assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
-    }
-
-    @Test
-    void addOrUpdate_somethingWentWrong() {
-        var reqModel = Employee.builder()
-                .firstName("FNAME")
-                .lastName("LNAME")
-                .clientName("CLIENT-1")
-                .email("demo@email.com")
-                .contact("123456789")
-                .salary(123.4)
-                .department("SYS")
-                .isActive(true)
-                .dateOfJoining(new Date())
-                .build();
-
-        when(clientConsumer.findClientByClientName(any(String.class)))
-                .thenReturn(Client.builder().clientId(101).clientName("CLIENT-1").build());
-        when(repo.save(any(EmployeeEntity.class)))
-                .thenThrow(RuntimeException.class);
-
-        assertThrows(RuntimeException.class, () -> service.addOrUpdateEmployee(reqModel));
-    }
-
-    @Test
-    void addOrUpdate_ClientNotFound() {
-        var reqModel = Employee.builder()
-                .firstName("FNAME")
-                .lastName("LNAME")
-                .clientName("CLIENT-1")
-                .email("demo@email.com")
-                .contact("123456789")
-                .salary(123.4)
-                .department("SYS")
-                .isActive(true)
-                .dateOfJoining(new Date())
-                .build();
-
-        assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
-    }
-
 
 }
 

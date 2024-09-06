@@ -95,11 +95,9 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -127,18 +125,30 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <systemPropertyVariable>
-                        <jacoco-agent.destFile>target/jacoco.exec</jacoco-agent.destFile>
-                    </systemPropertyVariable>
+                    <rules>
+                        <rule>
+                            <element>CLASS</element>
+                            <excludes>
+                                <exclude>*Test</exclude>
+                            </excludes>
+                            <limits>
+                                <limit>
+                                    <counter>LINE</counter>
+                                    <value>COVEREDRATIO</value>
+                                    <minimum>95%</minimum>
+                                </limit>
+                            </limits>
+                        </rule>
+                    </rules>
 
                     <excludes>
+                        <exclude>base/*.class</exclude>
                         <exclude>base/dto/*.class</exclude>
                         <exclude>base/model/*.class</exclude>
                         <exclude>base/repo/*.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
-
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -16,4 +16,14 @@ public class ErrorHandlingController {
     public ResponseEntity<String> handleNoClientFoundException(NoClientsFoundException e) {
         return new ResponseEntity<>("No clients found.", HttpStatus.NO_CONTENT);
     }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ApplicationException> applicationException(ApplicationException e) {
+        return new ResponseEntity<>(e, e.getStatusCode());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleInternalServerErrorException(Exception e) {
+        return new ResponseEntity<>("Ugh! Something went wrong....", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
