@@ -17,10 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -41,9 +37,6 @@ class EmployeeServiceTest {
 
     @InjectMocks
     private EmployeeServiceImpl service;
-
-    @Mock
-    private Logger log;
 
     @Test
     void saveOrUpdate_success() {
@@ -288,7 +281,6 @@ class EmployeeServiceTest {
 
     }
 
-    //working
     @Test
     void findAll_somethingWentWrong() {
         when(repo.findAll())
@@ -297,92 +289,80 @@ class EmployeeServiceTest {
         assertThrows(RuntimeException.class, () -> service.findAll());
     }
 
-    //working
-   @Test
-    void saveOrUpdate_ClientNameNotFound(){
-       var entity = EmployeeEntity.builder()
-               .employeeId(101L)
-               .firstName("FNAME")
-               .lastName("LNAME")
-               .clientName("CNAME")
-               .department("SYS")
-               .email("demo@email.com")
-               .contact("9876543210")
-               .salary(123.4)
-               .isActive(true)
-               .dateOfJoining(new Date())
-               .updatedDate(new Date())
-               .lastModifiedBy("Today")
-               .build();
+    @Test
+    void saveOrUpdate_ClientNameNotFound() {
+        var entity = EmployeeEntity.builder()
+                .employeeId(101L)
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CNAME")
+                .department("SYS")
+                .email("demo@email.com")
+                .contact("9876543210")
+                .salary(123.4)
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .updatedDate(new Date())
+                .lastModifiedBy("Today")
+                .build();
 
-       var reqModel = Employee.builder()
-               .firstName("FNAME")
-               .lastName("LNAME")
-               .clientName("CLIENT-1")
-               .email("demo@email.com")
-               .contact("123456789")
-               .salary(123.4)
-               .department("SYS")
-               .isActive(true)
-               .dateOfJoining(new Date())
-               .build();
+        var reqModel = Employee.builder()
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CLIENT-1")
+                .email("demo@email.com")
+                .contact("123456789")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
 
-       when(clientConsumer.findClientByClientName(entity.getClientName()))
-               .thenThrow(new ClientNotFoundException("Client not found."));
+        when(clientConsumer.findClientByClientName(entity.getClientName()))
+                .thenThrow(new ClientNotFoundException("Client not found."));
 
-       String client = entity.getClientName();
-       assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
-   }
+        assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
+    }
 
-   @Test
-   void addOrUpdate_somethingWentWrong(){
-       var reqModel = Employee.builder()
-               .firstName("FNAME")
-               .lastName("LNAME")
-               .clientName("CLIENT-1")
-               .email("demo@email.com")
-               .contact("123456789")
-               .salary(123.4)
-               .department("SYS")
-               .isActive(true)
-               .dateOfJoining(new Date())
-               .build();
+    @Test
+    void addOrUpdate_somethingWentWrong() {
+        var reqModel = Employee.builder()
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CLIENT-1")
+                .email("demo@email.com")
+                .contact("123456789")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
 
-       when(clientConsumer.findClientByClientName(any(String.class)))
-               .thenReturn(Client.builder().clientId(101).clientName("CLIENT-1").build());
-       when(repo.save(any(EmployeeEntity.class)))
-               .thenThrow(RuntimeException.class);
+        when(clientConsumer.findClientByClientName(any(String.class)))
+                .thenReturn(Client.builder().clientId(101).clientName("CLIENT-1").build());
+        when(repo.save(any(EmployeeEntity.class)))
+                .thenThrow(RuntimeException.class);
 
-       assertThrows(RuntimeException.class, () -> service.addOrUpdateEmployee(reqModel));
-   }
+        assertThrows(RuntimeException.class, () -> service.addOrUpdateEmployee(reqModel));
+    }
 
-   @Test
-    void addOrUpdate_ClientNotFound(){
-       var reqModel = Employee.builder()
-               .firstName("FNAME")
-               .lastName("LNAME")
-               .clientName("CLIENT-1")
-               .email("demo@email.com")
-               .contact("123456789")
-               .salary(123.4)
-               .department("SYS")
-               .isActive(true)
-               .dateOfJoining(new Date())
-               .build();
+    @Test
+    void addOrUpdate_ClientNotFound() {
+        var reqModel = Employee.builder()
+                .firstName("FNAME")
+                .lastName("LNAME")
+                .clientName("CLIENT-1")
+                .email("demo@email.com")
+                .contact("123456789")
+                .salary(123.4)
+                .department("SYS")
+                .isActive(true)
+                .dateOfJoining(new Date())
+                .build();
 
-       assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
-   }
+        assertThrows(ClientNotFoundException.class, () -> service.addOrUpdateEmployee(reqModel));
+    }
 
-    //does not give code coverage
-//    @Test
-//    void deleteEmployee_EmployeeNotFound(){
-//
-//        when(repo.findById(any())).thenReturn()
-//        assertThrows(EmployeeNotFoundException.class, () -> {
-//            service.deleteEmployee(101L);
-//        });
-//
-//    }
 
 }
 

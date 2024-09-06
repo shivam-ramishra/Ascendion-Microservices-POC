@@ -1,7 +1,6 @@
 package base.controller;
 
 import base.exception.EmployeeNotFoundException;
-import base.model.Client;
 import base.model.Employee;
 import base.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
