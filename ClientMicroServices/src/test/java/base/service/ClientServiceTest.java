@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -95,6 +96,17 @@ class ClientServiceTest {
     }
 
     @Test
+    void deleteClient_failure() {
+        when(repo.findById(123))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ClientNotFoundException.class, () -> {
+            service.deleteClient(123);
+        });
+
+    }
+
+    @Test
     void findAll_success() throws NoClientsFoundException {
         var respEntity1 = ClientEntity.builder()
                 .clientId(1)
@@ -129,6 +141,16 @@ class ClientServiceTest {
     }
 
     @Test
+    void findAll_failure_error(){
+        when(repo.findAll())
+                .thenThrow(new RuntimeException("Connection Error"));
+
+        assertThrows(NoClientsFoundException.class, () -> {
+            service.getClients();
+        });
+    }
+
+    @Test
     void findClientById_success() throws ClientNotFoundException {
         var entity = ClientEntity.builder()
                 .clientId(1)
@@ -149,5 +171,29 @@ class ClientServiceTest {
 
         assertThrows(ClientNotFoundException.class,
                 () -> service.findClientById(1));
+    }
+
+    @Test
+    void findClientByName_Success() throws ClientNotFoundException {
+        var entity = ClientEntity.builder()
+                .clientId(1)
+                .clientName("CLIENT-1")
+                .build();
+
+        when(repo.findByClientName("CLIENT-1"))
+                .thenReturn(ofNullable(entity));
+
+        var emp = service.findClientByName("CLIENT-1");
+
+        assertEquals("CLIENT-1",emp.getClientName());
+    }
+
+    @Test
+    void findClientByName_failure(){
+        when(repo.findByClientName(any()))
+                .thenThrow(NoClientsFoundException.class);
+
+        assertThrows(NoClientsFoundException.class,
+                ()-> service.findClientByName("CLIENT-1"));
     }
 }
