@@ -1,5 +1,6 @@
 package base.controller;
 
+import base.exception.ClientNotFoundException;
 import base.exception.NoClientsFoundException;
 import base.model.Client;
 import base.service.ClientService;
@@ -132,6 +133,38 @@ class ClientControllerTest {
         mockMvc
                 .perform(get(URL))
                 .andExpect(status().isNoContent())
+                .andDo(print());
+    }
+
+    @Test
+    void findClientByName_success() throws Exception {
+        final String URL = BASE_URI + "client/name";
+
+        Client client = Client.builder()
+                .clientId(1)
+                .clientName("name")
+                .build();
+
+        when(service.findClientByName("name"))
+                .thenReturn(client);
+
+        mockMvc
+                .perform(get(URL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.clientId", Is.is(1)))
+                .andExpect(jsonPath("$.clientName", Is.is("name")))
+                .andDo(print());
+    }
+
+    @Test
+    void findClientByName_failure() throws Exception {
+        final String URL = BASE_URI + "client/name";
+
+        when(service.findClientByName("name")).thenThrow(ClientNotFoundException.class);
+
+        mockMvc
+                .perform(get(URL))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }
