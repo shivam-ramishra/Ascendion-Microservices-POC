@@ -87,7 +87,7 @@ class EmployeeServiceTest {
         Employee savedEmp = service.addOrUpdateEmployee(reqModel);
 
         assertNotNull(savedEmp);
-        assertEquals(respModel.getEmployeeId(), savedEmp.getEmployeeId());
+        assertEquals(respModel.employeeId(), savedEmp.employeeId());
 
     }
 
@@ -294,7 +294,7 @@ class EmployeeServiceTest {
 
         assertFalse(all.isEmpty());
         assertEquals(3, all.size());
-        assertEquals(101L, all.get(0).getEmployeeId());
+        assertEquals(101L, all.getFirst().employeeId());
     }
 
     @Test
@@ -326,7 +326,7 @@ class EmployeeServiceTest {
 
         Employee emp = service.findEmployeeById(101L);
 
-        assertEquals(101L, emp.getEmployeeId());
+        assertEquals(101L, emp.employeeId());
     }
 
     @Test
@@ -359,7 +359,7 @@ class EmployeeServiceTest {
         var emp = service.findByClientName("ABC_123");
 
         assertEquals(1, emp.size());
-        assertEquals("FNAME", emp.get(0).getFirstName());
+        assertEquals("FNAME", emp.getFirst().firstName());
     }
 
     @Test

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
@@ -60,11 +59,11 @@ class DtoConverterTest {
         Employee entity = DtoConverter.entityToModel(respEntity);
 
         Assertions.assertNotNull(entity);
-        Assertions.assertEquals(entity.getEmployeeId(), reqModel.getEmployeeId());
-        Assertions.assertEquals(entity.getEmail(), reqModel.getEmail());
-        Assertions.assertEquals(entity.getFirstName(), reqModel.getFirstName());
-        Assertions.assertEquals(entity.getLastName(), reqModel.getLastName());
-        Assertions.assertEquals(String.valueOf(entity.getDateOfJoining()), String.valueOf(reqModel.getDateOfJoining()));
+        Assertions.assertEquals(entity.employeeId(), reqModel.employeeId());
+        Assertions.assertEquals(entity.email(), reqModel.email());
+        Assertions.assertEquals(entity.firstName(), reqModel.firstName());
+        Assertions.assertEquals(entity.lastName(), reqModel.lastName());
+        Assertions.assertEquals(String.valueOf(entity.dateOfJoining()), String.valueOf(reqModel.dateOfJoining()));
 
     }
 }

@@ -52,7 +52,7 @@ class ClientServiceTest {
         Client savedCLient = service.addOrUpdateClient(reqModel);
 
         assertNotNull(savedCLient);
-        assertEquals(respModel.getClientId(), savedCLient.getClientId());
+        assertEquals(respModel.clientId(), savedCLient.clientId());
     }
 
     @Test
@@ -130,7 +130,7 @@ class ClientServiceTest {
 
         assertFalse(all.isEmpty());
         assertEquals(3, all.size());
-        assertEquals(1, all.get(0).getClientId());
+        assertEquals(1, all.getFirst().clientId());
     }
 
     @Test
@@ -162,7 +162,7 @@ class ClientServiceTest {
                 .thenReturn(ofNullable(entity));
 
         Client cli = service.findClientById(1);
-        assertEquals(1, cli.getClientId());
+        assertEquals(1, cli.clientId());
     }
 
     @Test
@@ -186,7 +186,7 @@ class ClientServiceTest {
 
         var emp = service.findClientByName("CLIENT-1");
 
-        assertEquals("CLIENT-1", emp.getClientName());
+        assertEquals("CLIENT-1", emp.clientName());
     }
 
     @Test

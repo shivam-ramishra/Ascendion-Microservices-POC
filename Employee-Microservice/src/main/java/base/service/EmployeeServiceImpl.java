@@ -31,11 +31,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee addOrUpdateEmployee(Employee emp) {
-        if (emp != null && emp.getClientName() != null) {
+        if (emp != null && emp.clientName() != null) {
             try {
-                Client client = clientConsumer.findClientByClientName(emp.getClientName());
+                Client client = clientConsumer.findClientByClientName(emp.clientName());
                 if (client == null) {
-                    throw new ClientNotFoundException(emp.getClientName());
+                    throw new ClientNotFoundException(emp.clientName());
                 }
             } catch (Exception e) {
                 log.error("Error occurred while fetching client details");
@@ -49,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 log.info("Employee Saved to DB, emp data: {}", empModel);
                 return empModel;
             } catch (Exception e) {
-                throw new EmployeeNotFoundException("Something went wrong to save or update employee Id: " + emp.getEmployeeId() + " with error: " + e.getMessage());
+                throw new EmployeeNotFoundException("Something went wrong to save or update employee Id: " + emp.employeeId() + " with error: " + e.getMessage());
             }
         }
         throw new InvalidInputException("Couldn't save employee details. Bad Request");

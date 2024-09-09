@@ -2,19 +2,22 @@ package base.utils;
 
 import base.dto.ClientEntity;
 import base.model.Client;
-import org.springframework.beans.BeanUtils;
 
 public class DtoConverter {
     private DtoConverter() {
     }
-    public static ClientEntity modelToEntity(Client clientMod) {
-        ClientEntity clientEntity = ClientEntity.builder().build();
-        BeanUtils.copyProperties(clientMod, clientEntity);
-        return clientEntity;
+
+    public static ClientEntity modelToEntity(Client model) {
+        return ClientEntity.builder()
+                .clientId(model.clientId())
+                .clientName(model.clientName())
+                .build();
     }
-    public static Client entityToModel(ClientEntity clientEntity) {
-        Client client = Client.builder().build();
-        BeanUtils.copyProperties(clientEntity, client);
-        return client;
+
+    public static Client entityToModel(ClientEntity entity) {
+        return Client.builder()
+                .clientId(entity.getClientId())
+                .clientName(entity.getClientName())
+                .build();
     }
 }
